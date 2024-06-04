@@ -1,6 +1,8 @@
 package com.bnt.EmployeeManagementUsingJpa.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +24,14 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @PostMapping
-    Employee savEmployee(@RequestBody Employee employee){
-              return  employeeService.saveEmployee(employee);
+    ResponseEntity<Object> savEmployee(@RequestBody Employee employee){
+        Employee emp= employeeService.saveEmployee(employee); 
+           if(emp ==null){
+               return new ResponseEntity<>("Invalid Data: Null or Duplicate entries detected. Verify input",HttpStatus.BAD_REQUEST);
+           }
+           else{
+                return new ResponseEntity<>(emp,HttpStatus.ACCEPTED);
+           }             
     }
 
     @GetMapping
@@ -32,13 +40,27 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    Optional<Employee> getEmployeeId(@PathVariable("id") int id){
-        return employeeService.getEmployeeById(id);
+    ResponseEntity<Object> getEmployeeId(@PathVariable("id") int id){
+        Optional<Employee> optionalEmployee =employeeService.getEmployeeById(id);
+        if (optionalEmployee== null) {
+            return  new ResponseEntity<Object>("USER NOT FOUND ",HttpStatus.NOT_FOUND);
+           }
+        else{
+            return  new ResponseEntity<Object>(optionalEmployee,HttpStatus.OK);
+        }
     }
 
     @PutMapping
-    public Employee updatEmployee(@RequestBody Employee employee){
-        return employeeService.updateEmployee(employee);
+    public ResponseEntity<Object> updatEmployee(@RequestBody Employee employee){
+        Employee emp = employeeService.updateEmployee(employee);
+        if (emp== null) {
+            return  new ResponseEntity<Object>("USER NOT FOUND ",HttpStatus.NOT_FOUND);
+           }
+        else{
+            return  new ResponseEntity<Object>(emp,HttpStatus.OK);
+        }
+
+       
     }
 
     @DeleteMapping("/{id}")

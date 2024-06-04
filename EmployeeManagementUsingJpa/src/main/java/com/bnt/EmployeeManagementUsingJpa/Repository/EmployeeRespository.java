@@ -10,6 +10,4 @@ import com.bnt.EmployeeManagementUsingJpa.Model.Employee;
 @Repository
 public interface EmployeeRespository extends JpaRepository<Employee,Integer> {
 
-
-
 }
