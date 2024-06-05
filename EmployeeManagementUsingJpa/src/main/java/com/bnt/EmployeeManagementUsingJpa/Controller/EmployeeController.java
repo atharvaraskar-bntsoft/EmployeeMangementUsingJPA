@@ -16,6 +16,9 @@ import java.util.*;
 import com.bnt.EmployeeManagementUsingJpa.Model.Employee;
 import com.bnt.EmployeeManagementUsingJpa.Service.EmployeeService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -23,19 +26,23 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
+    Logger logger=LoggerFactory.getLogger(EmployeeController.class);
+
     @PostMapping
-    ResponseEntity<Object> savEmployee(@RequestBody Employee employee){
+    ResponseEntity<Object> saveEmployee(@RequestBody Employee employee){
         Employee emp= employeeService.saveEmployee(employee); 
            if(emp ==null){
                return new ResponseEntity<>("Invalid Data: Null or Duplicate entries detected. Verify input",HttpStatus.BAD_REQUEST);
            }
            else{
-                return new ResponseEntity<>(emp,HttpStatus.ACCEPTED);
+                logger.info("The user is created",emp);
+                return new ResponseEntity<>(emp,HttpStatus.CREATED);
            }             
     }
 
     @GetMapping
     List<Employee> getAllEmployee(){
+        logger.info("get information of the all employees");
         return employeeService.getAllEmployee();
     }
 
@@ -46,6 +53,7 @@ public class EmployeeController {
             return  new ResponseEntity<Object>("USER NOT FOUND ",HttpStatus.NOT_FOUND);
            }
         else{
+            logger.info("get information of the  employees by id",id);
             return  new ResponseEntity<Object>(optionalEmployee,HttpStatus.OK);
         }
     }
@@ -57,6 +65,7 @@ public class EmployeeController {
             return  new ResponseEntity<Object>("USER NOT FOUND ",HttpStatus.NOT_FOUND);
            }
         else{
+            logger.info("update information of the  employee ",emp);
             return  new ResponseEntity<Object>(emp,HttpStatus.OK);
         }
 
@@ -64,8 +73,16 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable("id") int id){
-         employeeService.deleteEmployee(id);
+    public ResponseEntity<Object> deleteEmployee(@PathVariable("id") int id){
+        boolean result = employeeService.deleteEmployee(id);
+        if (result== false) {
+            return  new ResponseEntity<Object>("USER NOT FOUND ",HttpStatus.NOT_FOUND);
+           }
+        else{
+            logger.info("employe deleted suucefully ",id);
+            return  new ResponseEntity<Object>("User Deleted Successfully",HttpStatus.OK);
+        }
+
     }
 
 

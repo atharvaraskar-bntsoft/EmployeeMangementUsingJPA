@@ -43,6 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             logger.error("Excption is:"+e);
         }
         return emp;    
+        
     }
 
     @Override
@@ -83,18 +84,32 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
         catch(UserNotFoundException e){
-            logger.error("UserNotfoundException",e);
+            logger.error("Exception occurs-"+e.getMessage());
        }
        return  emp;
     }
 
     @Override
-    public void deleteEmployee(int id) {
-        
-         employeeRespository.deleteById(id);
-
+    public  boolean deleteEmployee(int id) {
+        Boolean result=false;
+        try{
+        Optional<Employee> optionalEmployee = employeeRespository.findById(id); 
+  
+        if (optionalEmployee.isPresent()) {
+            employeeRespository.deleteById(id);
+            result=true;
+            return result;         
+        }
+        else{
+            throw new UserNotFoundException("User not Found ");
+        }
     }
-
-   
+        catch(UserNotFoundException e){
+            logger.error("Exception occurs-"+e.getMessage());
+       }
+       return  result;
+    }
+        
+  
     
 }
