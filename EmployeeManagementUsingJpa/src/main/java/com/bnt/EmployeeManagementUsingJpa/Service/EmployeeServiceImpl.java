@@ -70,7 +70,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee updateEmployee(Employee employee) {
-
         Employee emp=null;
         try{
         Optional<Employee> optionalEmployee = employeeRespository.findById(employee.getId()); 

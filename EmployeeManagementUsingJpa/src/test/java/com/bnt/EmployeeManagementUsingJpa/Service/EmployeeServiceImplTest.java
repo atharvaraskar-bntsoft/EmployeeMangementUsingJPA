@@ -1,8 +1,7 @@
 package com.bnt.EmployeeManagementUsingJpa.Service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -42,33 +41,50 @@ public class EmployeeServiceImplTest {
          expectedlist.add(new Employee(1, "atharva", 20000));
          expectedlist.add(new Employee(2, "ram", 40000));
      
-         // Mocking the behavior of the service method
          when(employeeRespository.findAll()).thenReturn(expectedlist);
      
-         // Calling the controller method under test
          List<Employee> actualList = employeeServiceImpl.getAllEmployee();
-     
-         // Asserting that the expected and actual lists are equal
          assertEquals(expectedlist, actualList);
     }
 
     @Test
-    void updateEmployee(){
-        Employee expected=new Employee(1,"Atharva",20000);
-        when(employeeRespository.save(expected)).thenReturn(expected);
+    void getEmployeeById(){
+        Employee expected= new Employee(1,"atharva",20000);
+        Optional<Employee> optionalExpected = Optional.of(expected);
 
-        Employee actual=employeeServiceImpl.updateEmployee(expected);
-        assertEquals(expected, actual);        
+         when(employeeRespository.findById(1)).thenReturn(optionalExpected);
+        
+         Optional<Employee> optionalactual=employeeServiceImpl.getEmployeeById(1);
+        assertEquals(optionalExpected, optionalactual);
     }
 
+
+
+    @Test
+    void updateEmployee(){
+
+    Employee expected = new Employee(1, "Atharva", 20000);
+
+    when(employeeRespository.findById(expected.getId())).thenReturn(Optional.of(expected));
+    when(employeeRespository.save(expected)).thenReturn(expected);
+
+    Employee actual = employeeServiceImpl.updateEmployee(expected);
+    assertEquals(expected, actual);
+
+}
+
+    
     @Test
     void deleteEmployee(){
+        Employee expected = new Employee(1, "Atharva", 20000);
        
-        int id=1;
-        employeeRespository.deleteById(id);
-        verify(employeeServiceImpl,times(1)).deleteEmployee(id);
+        when(employeeRespository.findById(expected.getId())).thenReturn(Optional.of(expected));
+        doNothing().when(employeeRespository).deleteById(1);
 
-
+     //   verify(employeeRespository,times(1)).deleteById(1);
+        boolean actual =employeeServiceImpl.deleteEmployee(1);
+        assertEquals(true, actual);    
+        
     }
     
 }

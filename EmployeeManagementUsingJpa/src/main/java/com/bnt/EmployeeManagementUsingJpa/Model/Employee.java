@@ -21,8 +21,8 @@ public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
-    int id;
-    String name;
-    int Salary;
+    private int id;
+    private String name;
+    private int Salary;
     
 }
