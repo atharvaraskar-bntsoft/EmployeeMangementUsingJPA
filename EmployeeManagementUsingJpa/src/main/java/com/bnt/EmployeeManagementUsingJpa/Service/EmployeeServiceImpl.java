@@ -49,65 +49,49 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Optional<Employee> getEmployeeById(int id) { 
         Optional<Employee> optionalEmployee = employeeRespository.findById(id);
-        try{
-            if(!optionalEmployee.isPresent()){
-                optionalEmployee=null;
-                throw new UserNotFoundException("User not Found ");
+        if(optionalEmployee.isPresent()){
+                return optionalEmployee;           
             }
-       
-        }catch(UserNotFoundException e){
-             logger.error("UserNotfoundException",e);
-        }
-        return optionalEmployee;
-        
+        else{
+            throw new UserNotFoundException("User not Found ");
+        }      
     }
 
     @Override
-    public List<Employee> getAllEmployee() {
-        
+    public List<Employee> getAllEmployee() {      
          return employeeRespository.findAll();
     }
 
-    @Override
-    public Employee updateEmployee(Employee employee) {
-        Employee emp=null;
-        try{
-        Optional<Employee> optionalEmployee = employeeRespository.findById(employee.getId()); 
-  
-        if (optionalEmployee.isPresent()) {
-            emp=employeeRespository.save(employee);
-            return emp;         
-        }
-        else{
-            throw new UserNotFoundException("User not Found ");
-        }
-    }
-        catch(UserNotFoundException e){
-            logger.error("Exception occurs-"+e.getMessage());
-       }
-       return  emp;
-    }
 
-    @Override
-    public  boolean deleteEmployee(int id) {
-        Boolean result=false;
-        try{
-        Optional<Employee> optionalEmployee = employeeRespository.findById(id); 
-  
-        if (optionalEmployee.isPresent()) {
-            employeeRespository.deleteById(id);
-            result=true;
-            return result;         
-        }
-        else{
-            throw new UserNotFoundException("User not Found ");
-        }
-    }
-        catch(UserNotFoundException e){
-            logger.error("Exception occurs-"+e.getMessage());
-       }
-       return  result;
-    }
+    public Employee updateEmployee(Employee employee) {
+            Optional<Employee> optionalEmployee = employeeRespository.findById(employee.getId()); 
+          
+            if(optionalEmployee.isPresent())
+            {
+               return employeeRespository.save(employee);
+            }
+            else{
+               throw new UserNotFoundException("Id Not Found For Uodate employeeData");
+            }
+         }
+
+
+         @Override
+         public  void deleteEmployee(int id) {       
+             Optional<Employee> optionalEmployee = employeeRespository.findById(id);        
+             if (optionalEmployee.isPresent()) {
+                 employeeRespository.deleteById(id);                 
+             }
+             else{
+                 throw new UserNotFoundException("User not Found ");
+             }
+         
+      
+         }
+
+
+   
+    
         
   
     
