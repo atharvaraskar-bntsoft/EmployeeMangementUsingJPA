@@ -2,6 +2,8 @@ package com.bnt.EmployeeManagementUsingJpa.Service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -74,18 +76,17 @@ public class EmployeeServiceImplTest {
 }
 
     
-    @Test
-    void deleteEmployee(){
-        Employee expected = new Employee(1, "Atharva", 20000);
-       
-        when(employeeRespository.findById(expected.getId())).thenReturn(Optional.of(expected));
-        doNothing().when(employeeRespository).deleteById(1);
+@Test
+void testDeleteEmployeeService() {
+    int id = 1;
+    Employee employee = new Employee(id, "Atharva", 20000);
+    when(employeeRespository.findById(id)).thenReturn(Optional.of(employee));
 
-     //   verify(employeeRespository,times(1)).deleteById(1);
-        boolean actual =employeeServiceImpl.deleteEmployee(1);
-        assertEquals(true, actual);    
-        
-    }
+    employeeServiceImpl.deleteEmployee(id);
+
+    verify(employeeRespository, times(1)).findById(id);
+    verify(employeeRespository, times(1)).deleteById(id);
+}
     
 }
 

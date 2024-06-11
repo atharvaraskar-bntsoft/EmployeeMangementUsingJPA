@@ -24,31 +24,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     Logger logger=LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     @Override
-    public Employee saveEmployee(Employee employee) {
-        Employee emp=null;
-
-        try {
-            if(employee.getName()==null || employee.getSalary()==0){
-                throw new DataIsNull("Data is null fill all the data");  
+    public Employee saveEmployee(Employee employee)  {
+            if(employee.getName()==null || employee.getSalary()==0 || employee.getName()==""){
+                     throw new DataIsNull("Data is null fill all the data");  
              }
              Optional<Employee> optionalEntity = employeeRespository.findById(employee.getId());
-             if (optionalEntity.isPresent()) {
+             if (optionalEntity.isPresent()) {                 
                     throw new DuplicateData("Duplicate Data Id Alredy Exist");
              }
              else{
-                return employeeRespository.save(employee);
+                       return employeeRespository.save(employee);  
              }
-            
-        } catch (Exception e) {
-            logger.error("Excption is:"+e);
-        }
-        return emp;    
         
     }
 
     @Override
     public Optional<Employee> getEmployeeById(int id) { 
         Optional<Employee> optionalEmployee = employeeRespository.findById(id);
+        
+        
         if(optionalEmployee.isPresent()){
                 return optionalEmployee;           
             }

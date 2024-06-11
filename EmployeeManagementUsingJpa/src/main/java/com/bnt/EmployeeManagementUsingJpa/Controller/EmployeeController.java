@@ -35,27 +35,26 @@ public class EmployeeController {
     @PostMapping
     ResponseEntity<Object> saveEmployee(@RequestBody Employee employee){
         Employee emp= employeeService.saveEmployee(employee); 
-           if(emp ==null){
-               return new ResponseEntity<>("Invalid Data: Null or Duplicate entries detected. Verify input",HttpStatus.BAD_REQUEST);
-           }
-           else{
-                logger.info("The user is created",emp);
-                return new ResponseEntity<>(emp,HttpStatus.CREATED);
-           }             
+            SuccessResponse successResponse=new SuccessResponse("The user is created",HttpStatus.CREATED.value(),emp)     ;   
+            logger.info("The user is created",emp);
+            return new ResponseEntity<>(successResponse,HttpStatus.CREATED);           
     }
 
     @GetMapping
-    List<Employee> getAllEmployee(){
+       ResponseEntity<Object> getAllEmployee(){
         logger.info("get information of the all employees");
-        return employeeService.getAllEmployee();
+        List<Employee> list1= employeeService.getAllEmployee();
+        SuccessResponse successResponse =new SuccessResponse("Showing Information Of All Employees",HttpStatus.FOUND.value(),list1);
+        return new ResponseEntity<>(successResponse,HttpStatus.FOUND);
     }
 
     @GetMapping("/{id}")
     ResponseEntity<Object> getEmployeeId(@PathVariable("id") int id){
         Optional<Employee> optionalEmployee =employeeService.getEmployeeById(id);
-            logger.info("get information of the  employees by id",id);
-            return  new ResponseEntity<Object>(optionalEmployee,HttpStatus.OK);
-        }
+       logger.info("get information of the  employees by id",id);
+        SuccessResponse successResponse=new SuccessResponse("Showing Information Of Employee",HttpStatus.FOUND.value(),optionalEmployee);
+        return  new ResponseEntity<Object>(successResponse,HttpStatus.OK);
+     }
     
 
     @PutMapping
@@ -69,7 +68,7 @@ public class EmployeeController {
  
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteEmployee(@PathVariable("id") int id){
-             employeeService.deleteEmployee(id);
+            employeeService.deleteEmployee(id);
             logger.info("employe deleted suucefully ",id);
             return  new ResponseEntity<Object>("User Deleted Successfully",HttpStatus.OK);
         

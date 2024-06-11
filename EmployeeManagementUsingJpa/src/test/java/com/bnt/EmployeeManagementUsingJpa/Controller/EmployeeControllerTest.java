@@ -1,6 +1,7 @@
 package com.bnt.EmployeeManagementUsingJpa.Controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -47,9 +48,9 @@ public class EmployeeControllerTest {
          expectedlist.add(new Employee(2, "ram", 40000));
      
          when(employeeService.getAllEmployee()).thenReturn(expectedlist);
-         List<Employee> actualList = employeeController.getAllEmployee();
+         ResponseEntity<Object> actualrResponseEntity= employeeController.getAllEmployee();
      
-         assertEquals(expectedlist, actualList);
+         assertEquals(FOUND, actualrResponseEntity.getStatusCode());
 
     }
 
@@ -72,7 +73,7 @@ public class EmployeeControllerTest {
             Employee expected=new Employee(1,"atharva",200000);
             when(employeeService.updateEmployee(expected)).thenReturn(expected);
 
-           ResponseEntity<Object> actualResponseEntity=employeeController.updatEmployee(expected);
+           ResponseEntity<Object> actualResponseEntity=employeeController.updateEmployee(expected);
 
            assertEquals(OK, actualResponseEntity.getStatusCode());
            assertEquals(expected, actualResponseEntity.getBody());
@@ -82,7 +83,7 @@ public class EmployeeControllerTest {
          @Test
          void deleteEmployee(){
             Employee expected=new Employee(1,"atharva",200000);
-            when(employeeService.deleteEmployee(1)).thenReturn(true);
+            doNothing().when(employeeService).deleteEmployee(1);
 
             ResponseEntity<Object> actualResponseEntity=employeeController.deleteEmployee(1);
 

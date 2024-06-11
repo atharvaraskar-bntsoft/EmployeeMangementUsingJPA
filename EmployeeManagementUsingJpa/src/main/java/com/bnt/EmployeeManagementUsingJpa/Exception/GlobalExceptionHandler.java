@@ -18,6 +18,21 @@ public class GlobalExceptionHandler {
    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException e) {
            ErrorResponse errorResponse=new ErrorResponse(e.getMessage(),HttpStatus.NOT_FOUND.value());
             return  new ResponseEntity<Object>(errorResponse,HttpStatus.NOT_FOUND);
-          }        
+          }  
+       
+   @ExceptionHandler(DuplicateData.class)       
+   public ResponseEntity<Object> handleDuplicateData( DuplicateData e){
+            ErrorResponse errorResponse=new ErrorResponse(e.getMessage(),HttpStatus.ALREADY_REPORTED.value());
+            return new ResponseEntity<Object>(errorResponse,HttpStatus.ALREADY_REPORTED);
+   }
+   
+   @ExceptionHandler(DataIsNull.class)
+     public ResponseEntity<Object> handleDataIsNullData( DataIsNull e){
+            ErrorResponse errorResponse=new ErrorResponse(e.getMessage(),HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<Object>(errorResponse, HttpStatus.BAD_REQUEST);
+     }
+
+
+   }
            
-}
+

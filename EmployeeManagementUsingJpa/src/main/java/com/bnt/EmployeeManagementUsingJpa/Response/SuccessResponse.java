@@ -14,5 +14,5 @@ public class SuccessResponse {
     
     private String message;
     private int statuscode;
-    Object object;
+    Object employee;
 }
