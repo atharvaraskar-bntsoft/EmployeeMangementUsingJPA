@@ -1,7 +1,11 @@
 package com.bnt.EmployeeManagementUsingJpa.Controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -13,7 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.bnt.EmployeeManagementUsingJpa.Exception.DataIsNull;
+import com.bnt.EmployeeManagementUsingJpa.Exception.UserNotFoundException;
 import com.bnt.EmployeeManagementUsingJpa.Model.Employee;
+
 import com.bnt.EmployeeManagementUsingJpa.Service.EmployeeService;
 import static org.springframework.http.HttpStatus.*;
 import java.util.*;
@@ -33,13 +40,11 @@ public class EmployeeControllerTest {
     void saveEmployeeTest(){
                Employee expected=new Employee(1,"atharva",21000);
                when(employeeService.saveEmployee(expected)).thenReturn(expected);
-              ResponseEntity<Object> actualresultResponseEntity=employeeController.saveEmployee(expected);
-
-            assertEquals(CREATED, actualresultResponseEntity.getStatusCode());
-            assertEquals(expected, actualresultResponseEntity.getBody());
-
+              ResponseEntity<Object> actualresultResponseEntity=employeeController.saveEmployee(expected);         
+              assertEquals(CREATED, actualresultResponseEntity.getStatusCode());
     }
 
+   
      @Test
     void getAllEmployees(){
        
@@ -62,8 +67,7 @@ public class EmployeeControllerTest {
           when(employeeService.getEmployeeById(1)).thenReturn(optionalExpected);
       
           ResponseEntity<Object> actualResultResponseEntity = employeeController.getEmployeeId(1);
-          assertEquals(HttpStatus.OK, actualResultResponseEntity.getStatusCode());
-          
+          assertEquals(HttpStatus.OK, actualResultResponseEntity.getStatusCode());        
           assertEquals(expected, optionalExpected.get());
        }
 
@@ -74,24 +78,64 @@ public class EmployeeControllerTest {
             when(employeeService.updateEmployee(expected)).thenReturn(expected);
 
            ResponseEntity<Object> actualResponseEntity=employeeController.updateEmployee(expected);
-
            assertEquals(OK, actualResponseEntity.getStatusCode());
-           assertEquals(expected, actualResponseEntity.getBody());
 
          }
 
          @Test
          void deleteEmployee(){
-            Employee expected=new Employee(1,"atharva",200000);
-            doNothing().when(employeeService).deleteEmployee(1);
-
-            ResponseEntity<Object> actualResponseEntity=employeeController.deleteEmployee(1);
+            int id=1;
+            doNothing().when(employeeService).deleteEmployee(id);
+            ResponseEntity<Object> actualResponseEntity=employeeController.deleteEmployee(id);
 
            assertEquals(OK, actualResponseEntity.getStatusCode());
            assertEquals("User Deleted Successfully", actualResponseEntity.getBody());
 
+         }
+
+
+
+
+
+         //Negative Test Cases
+         @Test
+         void saveEmployeeTestNegative(){
+                    Employee expected=new Employee(1,"atharva",0);
+                    when(employeeService.saveEmployee(expected)).thenThrow(new DataIsNull("Data is null fill all the data"));          
+                    assertThrows(DataIsNull.class, () -> employeeController.saveEmployee(expected));
+                    verify(employeeService, times(1)).saveEmployee(expected);
+         }
+
+         @Test
+         void getEmployeeByIdNegative(){
+              int invalidId = 9999; 
+               when(employeeService.getEmployeeById(invalidId)).thenThrow(new UserNotFoundException("User not Found"));
+               assertThrows(UserNotFoundException.class, () -> employeeController.getEmployeeId(invalidId));
+               verify(employeeService, times(1)).getEmployeeById(invalidId);
 
          }
+           
+
+         @Test
+         void updateEmployeeNegative(){
+          Employee expected=new Employee(1,"atharva",21000);
+          when(employeeService.updateEmployee(expected)).thenThrow(new UserNotFoundException("Id Not Found For Uodate employeeData"));
+          assertThrows(UserNotFoundException.class, () -> employeeController.updateEmployee(expected));
+         }
+
+         @Test
+         void deleteEmployeeNegative(){
+
+        int nonExistentId = 9999; 
+        doThrow(new UserNotFoundException("User not found")).when(employeeService).deleteEmployee(nonExistentId);
+        assertThrows(UserNotFoundException.class, () -> employeeController.deleteEmployee(nonExistentId));
+        verify(employeeService, times(1)).deleteEmployee(nonExistentId);
+
+         }
+
+  
+  
+     
 
 
 

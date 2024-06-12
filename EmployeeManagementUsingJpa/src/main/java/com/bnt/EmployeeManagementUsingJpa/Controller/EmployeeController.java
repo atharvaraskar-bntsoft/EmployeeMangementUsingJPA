@@ -60,7 +60,10 @@ public class EmployeeController {
     @PutMapping
     ResponseEntity<Object> updateEmployee(@RequestBody Employee employee){
         Employee emp= employeeService.updateEmployee(employee);
-        SuccessResponse successResponse =new SuccessResponse("Data updated Successfully",HttpStatus.OK.value(),emp);
+        SuccessResponse successResponse =new SuccessResponse();
+        successResponse.setMessage("Data updated Successfully");
+        successResponse.setStatuscode(HttpStatus.OK.value());
+        successResponse.setEmployee(emp);
         return new ResponseEntity<>(successResponse,HttpStatus.OK);
     }
     

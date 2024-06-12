@@ -58,8 +58,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     public Employee updateEmployee(Employee employee) {
-            Optional<Employee> optionalEmployee = employeeRespository.findById(employee.getId()); 
-          
+
+           if(employee.getName()==null || employee.getSalary()==0 || employee.getName()==""){
+             throw new DataIsNull("Data is null fill all the data");  
+             }
+           Optional<Employee> optionalEmployee = employeeRespository.findById(employee.getId());    
             if(optionalEmployee.isPresent())
             {
                return employeeRespository.save(employee);
