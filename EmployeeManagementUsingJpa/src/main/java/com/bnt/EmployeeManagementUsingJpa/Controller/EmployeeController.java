@@ -35,15 +35,15 @@ public class EmployeeController {
     @PostMapping
     ResponseEntity<Object> saveEmployee(@RequestBody Employee employee){
         Employee emp= employeeService.saveEmployee(employee); 
-            SuccessResponse successResponse=new SuccessResponse("The user is created",HttpStatus.CREATED.value(),emp)     ;   
-            logger.info("The user is created",emp);
-            return new ResponseEntity<>(successResponse,HttpStatus.CREATED);           
+        SuccessResponse successResponse=new SuccessResponse("The user is created",HttpStatus.CREATED.value(),emp)     ;   
+        logger.info("Employee saved successfully: {}",emp);
+        return new ResponseEntity<>(successResponse,HttpStatus.CREATED);           
     }
 
     @GetMapping
-       ResponseEntity<Object> getAllEmployee(){
-        logger.info("get information of the all employees");
+     ResponseEntity<Object> getAllEmployee(){
         List<Employee> list1= employeeService.getAllEmployee();
+        logger.info("Retrieving information of all employees");
         SuccessResponse successResponse =new SuccessResponse("Showing Information Of All Employees",HttpStatus.FOUND.value(),list1);
         return new ResponseEntity<>(successResponse,HttpStatus.FOUND);
     }
@@ -51,7 +51,7 @@ public class EmployeeController {
     @GetMapping("/{id}")
     ResponseEntity<Object> getEmployeeId(@PathVariable("id") int id){
         Optional<Employee> optionalEmployee =employeeService.getEmployeeById(id);
-       logger.info("get information of the  employees by id",id);
+       logger.info("Retrieving information for employee with ID: {}",id);
         SuccessResponse successResponse=new SuccessResponse("Showing Information Of Employee",HttpStatus.FOUND.value(),optionalEmployee);
         return  new ResponseEntity<Object>(successResponse,HttpStatus.OK);
      }
@@ -60,6 +60,7 @@ public class EmployeeController {
     @PutMapping
     ResponseEntity<Object> updateEmployee(@RequestBody Employee employee){
         Employee emp= employeeService.updateEmployee(employee);
+        logger.info("Updating employee with ID: {}", employee.getId());
         SuccessResponse successResponse =new SuccessResponse();
         successResponse.setMessage("Data updated Successfully");
         successResponse.setStatuscode(HttpStatus.OK.value());
@@ -72,7 +73,7 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteEmployee(@PathVariable("id") int id){
             employeeService.deleteEmployee(id);
-            logger.info("employe deleted suucefully ",id);
+            logger.info("Employee with ID {} deleted successfully", id);
             return  new ResponseEntity<Object>("User Deleted Successfully",HttpStatus.OK);
         
     }

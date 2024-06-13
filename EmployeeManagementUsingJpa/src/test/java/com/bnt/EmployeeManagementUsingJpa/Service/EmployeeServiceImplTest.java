@@ -1,6 +1,10 @@
 package com.bnt.EmployeeManagementUsingJpa.Service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.bnt.EmployeeManagementUsingJpa.Exception.DataIsNull;
+import com.bnt.EmployeeManagementUsingJpa.Exception.UserNotFoundException;
 import com.bnt.EmployeeManagementUsingJpa.Model.Employee;
 import com.bnt.EmployeeManagementUsingJpa.Repository.EmployeeRespository;
 import java.util.*;
@@ -88,6 +94,59 @@ void testDeleteEmployeeService() {
 }
 
 
+
+
+
+
+//negative test cases
+
+@Test
+void saveEmployeeTestNegative(){
+        Employee employee=new Employee(1,"",0);
+        assertThrows(DataIsNull.class, () -> employeeServiceImpl.saveEmployee(employee));
+        verify(employeeRespository, never()).save(employee);
+     // verify(employeeRespository, never()).save(any());
+    }
+
+
+
+@Test
+void getEmployeeByIdTestNegative(){
+    int InvalidId=9999;
+    when(employeeRespository.findById(InvalidId)).thenReturn(Optional.empty()); 
+    assertThrows(UserNotFoundException.class,()->employeeServiceImpl.getEmployeeById(InvalidId));
+}
     
+
+@Test
+void getAllEmployeeNegative(){
+    List<Employee> expected=Collections.emptyList();
+    when(employeeRespository.findAll()).thenReturn(expected);
+   // when(employeeRespository.findAll()).thenReturn(Collections.emptyList());
+    List<Employee> actual = employeeServiceImpl.getAllEmployee();
+   // assertEquals(Collections.emptyList(), result);
+   assertEquals(expected, actual);
+
 }
 
+
+@Test
+void updateEmployeeNegative(){
+    Employee employee=new Employee(1,"atharva",10000);
+    assertThrows(UserNotFoundException.class, () -> employeeServiceImpl.updateEmployee(employee));
+    verify(employeeRespository, never()).save(employee);
+    //verify(employeeRespository, never()).save(any());   
+}
+
+
+@Test
+void deleteEmployeeNegative(){
+     int id=9999;
+     when(employeeRespository.findById(id)).thenReturn(Optional.empty());
+     //when(employeeRespository.findById(anyInt())).thenReturn(Optional.empty());
+     assertThrows(UserNotFoundException.class, () -> employeeServiceImpl.deleteEmployee(id));
+     verify(employeeRespository, never()).deleteById(id);
+
+}
+
+}

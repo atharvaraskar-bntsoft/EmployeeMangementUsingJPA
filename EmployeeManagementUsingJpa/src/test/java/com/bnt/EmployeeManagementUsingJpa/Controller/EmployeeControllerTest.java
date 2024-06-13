@@ -100,10 +100,10 @@ public class EmployeeControllerTest {
          //Negative Test Cases
          @Test
          void saveEmployeeTestNegative(){
-                    Employee expected=new Employee(1,"atharva",0);
-                    when(employeeService.saveEmployee(expected)).thenThrow(new DataIsNull("Data is null fill all the data"));          
-                    assertThrows(DataIsNull.class, () -> employeeController.saveEmployee(expected));
-                    verify(employeeService, times(1)).saveEmployee(expected);
+              Employee expected=new Employee(1,"atharva",0);
+              when(employeeService.saveEmployee(expected)).thenThrow(new DataIsNull("Data is null fill all the data"));          
+              assertThrows(DataIsNull.class, () -> employeeController.saveEmployee(expected));
+              verify(employeeService, times(1)).saveEmployee(expected);
          }
 
          @Test

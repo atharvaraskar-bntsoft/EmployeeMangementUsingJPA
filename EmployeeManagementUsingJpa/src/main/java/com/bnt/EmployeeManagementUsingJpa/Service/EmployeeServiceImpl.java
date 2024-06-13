@@ -26,7 +26,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee saveEmployee(Employee employee)  {
             if(employee.getName()==null || employee.getSalary()==0 || employee.getName()==""){
-                     throw new DataIsNull("Data is null fill all the data");  
+                     throw new DataIsNull("Employee data is null or incomplete. Please provide the correct information.");  
              }
              Optional<Employee> optionalEntity = employeeRespository.findById(employee.getId());
              if (optionalEntity.isPresent()) {                 
@@ -68,7 +68,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                return employeeRespository.save(employee);
             }
             else{
-               throw new UserNotFoundException("Id Not Found For Uodate employeeData");
+               throw new UserNotFoundException("Id Not Found For Update employeeData");
             }
          }
 
