@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.bnt.EmployeeManagementUsingJpa.Exception.DataIsNull;
@@ -11,6 +14,7 @@ import com.bnt.EmployeeManagementUsingJpa.Exception.DuplicateData;
 import com.bnt.EmployeeManagementUsingJpa.Exception.UserNotFoundException;
 import com.bnt.EmployeeManagementUsingJpa.Model.Employee;
 import com.bnt.EmployeeManagementUsingJpa.Repository.EmployeeRespository;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     Logger logger=LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     @Override
+    @CacheEvict(value="employee")
     public Employee saveEmployee(Employee employee)  {
             if(employee.getName()==null || employee.getSalary()==0 || employee.getName()==""){
                      throw new DataIsNull("Employee data is null or incomplete. Please provide the correct information.");  
@@ -39,6 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Cacheable(value = "employee", key = "#id")
     public Optional<Employee> getEmployeeById(int id) { 
         Optional<Employee> optionalEmployee = employeeRespository.findById(id);
         
@@ -52,11 +58,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Cacheable(value = "employee", key = "'all'")
     public List<Employee> getAllEmployee() {      
          return employeeRespository.findAll();
     }
 
-
+    @Override
+    @CachePut(value = "employee", key = "#employee.id")
     public Employee updateEmployee(Employee employee) {
 
            if(employee.getName()==null || employee.getSalary()==0 || employee.getName()==""){
@@ -74,6 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
          @Override
+         @CacheEvict(value = "employee", key = "#id")
          public  void deleteEmployee(int id) {       
              Optional<Employee> optionalEmployee = employeeRespository.findById(id);        
              if (optionalEmployee.isPresent()) {
@@ -82,8 +91,6 @@ public class EmployeeServiceImpl implements EmployeeService {
              else{
                  throw new UserNotFoundException("User not Found ");
              }
-         
-      
          }
 
 
