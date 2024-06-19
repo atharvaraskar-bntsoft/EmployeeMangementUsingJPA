@@ -17,7 +17,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
 @Entity
 public class Employee implements Serializable {
     @Id

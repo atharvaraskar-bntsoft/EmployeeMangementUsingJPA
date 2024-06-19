@@ -43,8 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         
     }
 
-    @Override
-    @Cacheable(value = "employee", key = "#id")
+    @Override   
+    @Cacheable(value = "employee")
     public Optional<Employee> getEmployeeById(int id) { 
         Optional<Employee> optionalEmployee = employeeRespository.findById(id);
         
@@ -58,13 +58,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Cacheable(value = "employee", key = "'all'")
+    @Cacheable(value = "employee")
     public List<Employee> getAllEmployee() {      
          return employeeRespository.findAll();
     }
 
     @Override
-    @CachePut(value = "employee", key = "#employee.id")
+    @CachePut(value = "employee")
     public Employee updateEmployee(Employee employee) {
 
            if(employee.getName()==null || employee.getSalary()==0 || employee.getName()==""){
@@ -82,7 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
          @Override
-         @CacheEvict(value = "employee", key = "#id")
+         @CacheEvict(value = "employee", allEntries = true)
          public  void deleteEmployee(int id) {       
              Optional<Employee> optionalEmployee = employeeRespository.findById(id);        
              if (optionalEmployee.isPresent()) {
